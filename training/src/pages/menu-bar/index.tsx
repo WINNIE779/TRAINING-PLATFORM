@@ -12,7 +12,7 @@ export const MenuBar = () => {
           menu={{ items }}
           trigger={["click"]}
           placement="bottomRight"
-          overlayClassName="user-menu-dropdown"
+          // overlayClassName="user-menu-dropdown"
         >
           <button
             type="button"

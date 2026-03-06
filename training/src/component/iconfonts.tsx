@@ -1,6 +1,4 @@
-import React from "react";
-
-export function SwitchIcon() {
+export const SwitchIcon = () => {
   return (
     <svg
       width="14"
@@ -13,9 +11,9 @@ export function SwitchIcon() {
       <path d="M7 16L3 12l4-4M3 12h18M17 8l4 4-4 4M21 12H3" />
     </svg>
   );
-}
+};
 
-export function UserIcon() {
+export const UserIcon = () => {
   return (
     <svg
       width="14"
@@ -29,9 +27,9 @@ export function UserIcon() {
       <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
     </svg>
   );
-}
+};
 
-export function LogoutIcon() {
+export const LogoutIcon = () => {
   return (
     <svg
       width="14"
@@ -44,9 +42,9 @@ export function LogoutIcon() {
       <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
     </svg>
   );
-}
+};
 
-export function CameraIcon() {
+export const CameraIcon = () => {
   return (
     <svg
       width="14"
@@ -60,9 +58,9 @@ export function CameraIcon() {
       <circle cx="12" cy="13" r="4" />
     </svg>
   );
-}
+};
 
-export function SettingIcon() {
+export const SettingIcon = () => {
   return (
     <svg
       width="14"
@@ -76,4 +74,22 @@ export function SettingIcon() {
       <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
     </svg>
   );
-}
+};
+
+export const CreateFileIcon = () => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
+      <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M12 11v6" />
+      <path d="M9 14h6" />
+    </svg>
+  );
+};
