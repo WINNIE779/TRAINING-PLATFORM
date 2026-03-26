@@ -17,6 +17,9 @@ export const useAction = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("image");
   const [createOpen, setCreateOpen] = useState(false);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
 
   const list = useMemo<TrainingSetItem[]>(
     () => [
@@ -55,25 +58,56 @@ export const useAction = () => {
 
   const MAX_IMAGE_COUNT = 20;
 
-  const isImage = activeTab === "image";
+  const getFileKind = (file: UploadFile): TabKey | null => {
+    const type = file.type ?? "";
+    if (type.startsWith("image/")) return "image";
+    if (type.startsWith("video/")) return "video";
+    return null;
+  };
 
-  const accept = isImage ? "image/*" : "video/*"; //可上传类型
+  const detectTabFromList = (list: UploadFile[]) => {
+    for (const file of list) {
+      if (kind) return kind;
+    }
+    return null;
+  };
+
+  const detectedTab = useMemo(() => detectTabFromList(fileList), [fileList]);
+
+  const currentTab = detectedTab ?? activeTab;
+
+  const isImage = currentTab === "image";
+
+  const accept =
+    fileList.length === 0 ? "image/*,video/*" : isImage ? "image/*" : "video/*"; //可上传类型
 
   const totalBytes = fileList.reduce((sum, f) => sum + (f.size ?? 0), 0);
 
   const totalMb = Math.round((totalBytes / 1024 / 1024) * 10) / 10;
 
   const beforeUpload = (file: RcFile) => {
-    const typeOk = isImage
-      ? file.type.startsWith("image/")
-      : file.type.startsWith("video/");
-    if (!typeOk) {
-      message.error(isImage ? "只能上传图片文件" : "只能上传视频文件");
+    const isImageFile = file.type.startsWith("image/");
+    const isVideoFile = file.type.startsWith("video/");
+    if (!isImageFile && !isVideoFile) {
+      message.error("只能上传图片或视频文件");
       return Upload.LIST_IGNORE;
     }
 
+    if (fileList.length > 0) {
+      if (currentTab === "image" && !isImageFile) {
+        message.error("已选择图片类型，不能上传视频");
+        return Upload.LIST_IGNORE;
+      }
+      if (currentTab === "video" && !isVideoFile) {
+        message.error("已选择视频类型，不能上传图片");
+        return Upload.LIST_IGNORE;
+      }
+    }
+
     // 图片数量限制（最多 20 张）
-    if (isImage) {
+    const nextTab =
+      fileList.length === 0 ? (isImageFile ? "image" : "video") : currentTab;
+    if (nextTab === "image") {
       const imageCount = fileList.length;
       if (imageCount >= MAX_IMAGE_COUNT) {
         message.error(`图片最多可上传 ${MAX_IMAGE_COUNT} 张`);
@@ -93,8 +127,17 @@ export const useAction = () => {
 
   const onChange = (info: UploadChangeParam<UploadFile>) => {
     let next = info.fileList;
-    if (isImage && next.length > MAX_IMAGE_COUNT)
-      next = next.slice(0, MAX_IMAGE_COUNT);
+    const nextTab = detectTabFromList(next);
+    if (nextTab) {
+      const filtered = next.filter((file) => getFileKind(file) === nextTab);
+      if (filtered.length !== next.length) {
+        message.error("不能同时上传图片和视频");
+        next = filtered;
+      }
+      if (nextTab === "image" && next.length > MAX_IMAGE_COUNT) {
+        next = next.slice(0, MAX_IMAGE_COUNT);
+      }
+    }
 
     // 总大小不超 5GB
     const sumBytes = (list: UploadFile[]) =>
@@ -104,24 +147,55 @@ export const useAction = () => {
     }
 
     setFileList(next);
+    if (nextTab && next.length > 0) setActiveTab(nextTab);
+  };
+
+  const getBase64 = (file: RcFile) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  0;
+  const onPreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview && file.originFileObj) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+
+    setPreviewImage((file.url || file.preview || "") as string);
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || "");
+  };
+
+  const closePreview = () => {
+    setPreviewOpen(false);
+    setPreviewImage("");
+    setPreviewTitle("");
   };
 
   return {
     accept,
     isImage,
+    currentTab,
     totalMb,
     fileList,
     activeTab,
     createOpen,
+    previewOpen,
+    previewImage,
+    previewTitle,
     totalBytes,
     visibleList,
     MAX_TOTAL_BYTES,
     MAX_IMAGE_COUNT,
     onChange,
+    onPreview,
     openCreate,
     setFileList,
     beforeUpload,
     setActiveTab,
     closeCreate,
+    closePreview,
   };
 };

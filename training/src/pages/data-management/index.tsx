@@ -12,12 +12,17 @@ export const DataManagement = () => {
     activeTab,
     visibleList,
     createOpen,
+    previewOpen,
+    previewImage,
+    previewTitle,
     MAX_IMAGE_COUNT,
     onChange,
+    onPreview,
     openCreate,
     closeCreate,
     setActiveTab,
     beforeUpload,
+    closePreview,
   } = useAction();
 
   return (
@@ -91,27 +96,62 @@ export const DataManagement = () => {
         }}
       >
         <div className="mb-3 text-sm text-gray-700">
-          当前类型：
-          <span className="font-medium">{isImage ? "图片" : "视频"}</span>
+          上传数据集：
+          <Button>Upload</Button>
         </div>
 
-        <Upload.Dragger
-          multiple={isImage}
-          accept={accept}
-          fileList={fileList}
-          beforeUpload={beforeUpload}
-          onChange={onChange}
-        >
-          <p className="text-gray-900 font-medium">点击或拖拽文件到此处导入</p>
-          <p className="text-gray-500 text-sm mt-1">
-            {isImage
-              ? `仅支持图片，最多 ${MAX_IMAGE_COUNT} 张，总大小不超过 5GB`
-              : "仅支持视频，总大小不超过 5GB"}
-          </p>
-          <p className="text-gray-400 text-xs mt-1">
-            当前已选：{fileList.length} 个文件，约 {totalMb} MB
-          </p>
-        </Upload.Dragger>
+        {isImage ? (
+          <Upload
+            multiple
+            accept={accept}
+            listType="picture-card"
+            fileList={fileList}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+            onPreview={onPreview}
+            showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
+          >
+            {fileList.length >= MAX_IMAGE_COUNT ? null : (
+              <div>
+                <div className="text-sm text-gray-700">上传</div>
+                <div className="text-xs text-gray-400 mt-1">
+                  最多 {MAX_IMAGE_COUNT} 张
+                </div>
+              </div>
+            )}
+          </Upload>
+        ) : (
+          <Upload.Dragger
+            multiple={isImage}
+            accept={accept}
+            fileList={fileList}
+            beforeUpload={beforeUpload}
+            onChange={onChange}
+          >
+            <p className="text-gray-900 font-medium">
+              点击或拖拽文件到此处导入
+            </p>
+            <p className="text-gray-500 text-sm mt-1">
+              {isImage
+                ? `仅支持图片，最多 ${MAX_IMAGE_COUNT} 张，总大小不超过 5GB`
+                : "仅支持视频，总大小不超过 5GB"}
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              当前已选：{fileList.length} 个文件，约 {totalMb} MB
+            </p>
+          </Upload.Dragger>
+        )}
+      </Modal>
+
+      <Modal
+        open={previewOpen}
+        title={previewTitle}
+        footer={null}
+        onCancel={closePreview}
+      >
+        {previewImage ? (
+          <img alt={previewTitle} className="w-full" src={previewImage} />
+        ) : null}
       </Modal>
 
       <div className="flex flex-col gap-4">
