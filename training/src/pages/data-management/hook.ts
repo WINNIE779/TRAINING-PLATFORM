@@ -67,6 +67,7 @@ export const useAction = () => {
 
   const detectTabFromList = (list: UploadFile[]) => {
     for (const file of list) {
+      const kind = getFileKind(file);
       if (kind) return kind;
     }
     return null;
