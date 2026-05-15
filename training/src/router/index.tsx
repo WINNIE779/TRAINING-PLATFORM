@@ -1,9 +1,9 @@
 import { DataAnnotation } from "@/pages/data-annotation";
+import { DataManagementDetail } from "@/pages/data-management/detail";
 import { DataManagement } from "@/pages/data-management";
-
+import { MenuBar } from "@/pages/menu-bar";
 import { SimulationTraining } from "@/pages/simulation-training";
 import { ReactElement } from "react";
-
 import { Route, Routes } from "react-router-dom";
 
 export interface IRouteItem {
@@ -19,7 +19,6 @@ const routesList: IRouteItem[] = [
     path: "/data-management",
     element: <DataManagement />,
   },
-
   {
     key: "data-annotation",
     path: "/data-annotation",
@@ -35,10 +34,16 @@ const routesList: IRouteItem[] = [
 export const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<DataManagement />} />
-      {routesList.map((route) => (
-        <Route key={route.key} path={route.path} element={route.element} />
-      ))}
+      <Route element={<MenuBar />}>
+        <Route path="/" element={<DataManagement />} />
+        {routesList.map((route) => (
+          <Route key={route.key} path={route.path} element={route.element} />
+        ))}
+        <Route
+          path="/data-management/:datasetId"
+          element={<DataManagementDetail />}
+        />
+      </Route>
     </Routes>
   );
 };
