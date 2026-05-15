@@ -1,4 +1,5 @@
 import { Dropdown } from "antd";
+import type { NavLinkRenderProps } from "react-router-dom";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAction } from "./hook";
 
@@ -133,7 +134,7 @@ export const MenuBar = () => {
 
           <NavLink
             to="/data-annotation"
-            className={({ isActive }) =>
+            className={({ isActive }: NavLinkRenderProps) =>
               `${mainNavBase} ${isActive ? mainNavActive : mainNavIdle}`
             }
           >
@@ -143,7 +144,7 @@ export const MenuBar = () => {
 
           <NavLink
             to="/simulation-training"
-            className={({ isActive }) =>
+            className={({ isActive }: NavLinkRenderProps) =>
               `${mainNavBase} ${isActive ? mainNavActive : mainNavIdle}`
             }
           >

@@ -1,4 +1,5 @@
 import { DataAnnotation } from "@/pages/data-annotation";
+import { DataManagementDetail } from "@/pages/data-management/detail";
 import { DataManagement } from "@/pages/data-management";
 import { MenuBar } from "@/pages/menu-bar";
 import { SimulationTraining } from "@/pages/simulation-training";
@@ -38,6 +39,10 @@ export const Router = () => {
         {routesList.map((route) => (
           <Route key={route.key} path={route.path} element={route.element} />
         ))}
+        <Route
+          path="/data-management/:datasetId"
+          element={<DataManagementDetail />}
+        />
       </Route>
     </Routes>
   );
